@@ -64,19 +64,6 @@ Answer `y` to add the marketplace, then pick a scope.
 </details>
 
 <details>
-<summary><b>Word order only, no right-alignment</b></summary>
-
-In a terminal `claude` session:
-
-```
-/plugin configure persian-rtl@persian-rtl
-```
-
-Set `rightAlign` to `false`. Word order is still fixed everywhere.
-
-</details>
-
-<details>
 <summary><b>Local / development</b></summary>
 
 ```bash
@@ -200,23 +187,6 @@ claude plugin install persian-rtl@persian-rtl --scope user
 </div>
 
 برای اضافه شدن marketplace بزن `y` و بعد scope رو انتخاب کن.
-
-</details>
-
-<details>
-<summary><b>فقط ترتیب کلمه‌ها، بدون راست‌چین</b></summary>
-
-تو یه سشن `claude` توی ترمینال:
-
-<div dir="ltr">
-
-```
-/plugin configure persian-rtl@persian-rtl
-```
-
-</div>
-
-`rightAlign` رو `false` کن. ترتیب کلمه‌ها همچنان همه‌جا درسته.
 
 </details>
 

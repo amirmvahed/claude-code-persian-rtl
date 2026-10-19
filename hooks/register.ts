@@ -8,16 +8,14 @@ import { fixBidi, isolate, isProse, splitBlocks, wrapLines } from './bidi'
 const PROSE_PER_CELL = 1.2
 const MAX_CELLS = 95
 
-export const register: Register = (on, options) => {
-  const rightAlign = options.rightAlign !== false
-
-  // Experimental, desktop only: draws the reply itself, pushing mostly-Persian
+export const register: Register = on => {
+  // Desktop only: draws the reply itself, pushing mostly-Persian
   // paragraphs and list items to the right edge. No surface takes a text
   // alignment, so a long Persian paragraph is broken into lines here, each
   // its own row pushed right, which reads as right-aligned text.
   on('ui.render', { component: 'AssistantMessage' }, ($, e, next) => {
     const blocks = splitBlocks(e.props.text)
-    if (!rightAlign || e.surface !== 'desktop' || !blocks.some(b => b.isRtl)) {
+    if (e.surface !== 'desktop' || !blocks.some(b => b.isRtl)) {
       return next({ ...e, props: { ...e.props, text: fixBidi(e.props.text) } })
     }
 

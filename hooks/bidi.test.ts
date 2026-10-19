@@ -110,22 +110,6 @@ test('pushes Persian paragraphs right on the desktop', async ($, on) => {
   await term.unmount()
 })
 
-test('leaves the engine drawing when rightAlign is off', { options: { rightAlign: false } }, async ($, on) => {
-  on('ui.render', { component: 'AssistantMessage' }, ($, e) => {
-    const { Markdown } = $.ui.resolve(e)
-    return Markdown({ text: 'engine' })
-  })
-
-  const ui = await $.ui.mount({
-    plugin: 'persian-rtl',
-    surface: 'desktop',
-    component: 'AssistantMessage',
-    props: MIXED,
-  })
-  expect(JSON.stringify(await ui.drawn())).toContain('engine')
-  await ui.unmount()
-})
-
 test('inline code does not count toward a line\'s direction', async () => {
   expect(isRtl('اول `git status` را اجرا کن')).toBe(true)
   expect(isRtl('Run `پیکربندی` now please')).toBe(false)
