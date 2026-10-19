@@ -1,0 +1,14 @@
+{
+  "name": "persian-rtl",
+  "owner": {
+    "name": "Amir Vahed"
+  },
+  "plugins": [
+    {
+      "name": "persian-rtl",
+      "source": "./",
+      "description": "Fixes mixed Persian/English (RTL) text in Claude Code: keeps word order right and right-aligns Persian paragraphs, lists and tables on the desktop app"
+    }
+  ],
+  "description": "Right-to-left Persian/Farsi support for Claude Code"
+}
