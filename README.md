@@ -1,64 +1,39 @@
 # Persian RTL for Claude Code
 
-If you write to Claude in Persian, you know the pain: drop one English word or a file name into a sentence and the whole line gets scrambled. And everything is stuck on the left.
+**Right-to-left Persian that actually reads right, in the desktop app and the terminal.**
 
-This plugin fixes that:
+Drop one English word, a file name or a number into a Persian sentence and the whole line scrambles. Everything sits on the left. This plugin fixes both: word order comes out the way you wrote it, and on the desktop app Claude's Persian replies are right-aligned.
 
-- Word order comes out right, in the desktop app and in the terminal. English words, `code` and numbers stay where you put them.
-- In the desktop app, Persian replies are right-aligned: paragraphs, lists (with the numbers on the right) and tables. English and code blocks stay on the left.
-
-## Install
-
-Open a terminal and run:
-
-```bash
-claude plugin marketplace add amirmvahed/claude-code-persian-rtl
-```
-
-```bash
-claude plugin install persian-rtl@persian-rtl --scope user
-```
-
-Then open a new session (or type `/reload-plugins` in the one you have open). That's it.
-
-**On the desktop app?** Don't type `/plugin install` in the chat box, it won't do anything there, and the plugin won't show up in the app's plugin list either. Just use the two commands above.
-
-Already using `claude` in a terminal? You can also do it from there:
+**English** · [فارسی](#fa)
 
 ```
-/plugin install persian-rtl --marketplace amirmvahed/claude-code-persian-rtl
+   REPLY           DETECT          ISOLATE          ALIGN
+ ┌───────┐      ┌─────────┐      ┌─────────┐      ┌─────────┐
+ │ Mixed │ ───▶ │ Mostly  │ ───▶ │ RLI…PDI │ ───▶ │  Push   │
+ │ fa/en │      │ Persian?│      │ per line│      │  right  │
+ └───────┘      └─────────┘      └─────────┘      └─────────┘
+               words, not        English and       desktop
+                 letters          code stay put       only
 ```
-
-Say `y` to add the marketplace and pick a scope.
-
-Don't want the right-alignment, only the word-order fix? Run `/plugin configure persian-rtl@persian-rtl` in a terminal `claude` session and set `rightAlign` to `false`.
-
-## How it works
-
-- Every line that's mostly Persian gets wrapped in Unicode bidi isolate marks (U+2067 … U+2069), so it's laid out right to left. Inline code and link URLs don't count toward "mostly Persian".
-- The desktop app doesn't let plugins set text alignment, so on the desktop the plugin draws Claude's replies itself: it breaks each Persian paragraph into lines and pushes each line to the right. Tables get mirrored.
-
-## Known issues
-
-- Line width on the desktop is a guess based on the window size, so some lines wrap a bit early.
-- The box you type in can't be touched by a plugin. Your message looks right once it's sent.
-- Right-alignment only applies to Claude's replies in the desktop app. Your own messages and the terminal only get the word-order fix.
-- Only works in Claude Code. The Chat tab and claude.ai aren't affected.
 
 ---
 
-# راست‌چین فارسی برای Claude Code
+## What You Get
 
-اگه با Claude فارسی حرف می‌زنی حتماً دیدی که تا یه کلمه‌ی انگلیسی یا اسم فایل وسط جمله میاد، کل خط به هم می‌ریزه. تازه همه‌چی هم چپ‌چینه.
+| Where | Word order fixed | Right-aligned |
+|-------|:----------------:|:-------------:|
+| Claude's replies, desktop app | ✓ | ✓ paragraphs, lists, tables |
+| Claude's replies, terminal | ✓ | — |
+| Your own messages, anywhere | ✓ once sent | — |
+| Code blocks and English text | left as is | stay on the left |
 
-این پلاگین درستش می‌کنه:
+Lists keep their numbers and bullets on the right. Tables get mirrored. `Inline code`, numbers and English words stay exactly where you put them.
 
-- ترتیب کلمه‌ها درست درمیاد، هم تو اپ دسکتاپ هم تو ترمینال. کلمه‌های انگلیسی، کد و عددها همون‌جایی می‌مونن که نوشتی.
-- تو اپ دسکتاپ جواب‌های فارسی راست‌چین می‌شن: پاراگراف‌ها، لیست‌ها (با شماره سمت راست) و جدول‌ها. متن انگلیسی و بلوک کد سمت چپ می‌مونن.
+---
 
-## نصب
+## Quick Start
 
-ترمینال رو باز کن و این دو تا رو بزن:
+**Two commands, any terminal:**
 
 ```bash
 claude plugin marketplace add amirmvahed/claude-code-persian-rtl
@@ -68,26 +43,211 @@ claude plugin marketplace add amirmvahed/claude-code-persian-rtl
 claude plugin install persian-rtl@persian-rtl --scope user
 ```
 
-بعد یه سشن جدید باز کن (یا تو همون سشنی که بازه `/reload-plugins` رو بزن). تمام.
+Open a new session, or run `/reload-plugins` in the one you have open. Done.
 
-**با اپ دسکتاپ کار می‌کنی؟** `/plugin install` رو تو کادر چت نزن، اون‌جا کاری نمی‌کنه و پلاگین تو لیست پلاگین‌های اپ هم نمیاد. همون دو تا دستور بالا رو بزن.
+<details>
+<summary><b>Desktop app</b></summary>
 
-اگه `claude` رو تو ترمینال اجرا می‌کنی، از همون‌جا هم می‌شه:
+Use the two commands above in a terminal. Don't type `/plugin install` in the desktop chat box: it does nothing there, and the plugin won't appear in the app's plugin list either. It's installed all the same.
+
+</details>
+
+<details>
+<summary><b>Inside a terminal <code>claude</code> session</b></summary>
 
 ```
 /plugin install persian-rtl --marketplace amirmvahed/claude-code-persian-rtl
 ```
 
-برای اضافه شدن marketplace بزن `y` و scope رو انتخاب کن.
+Answer `y` to add the marketplace, then pick a scope.
 
-راست‌چین رو نمی‌خوای و فقط درست شدن ترتیب کلمه‌ها برات کافیه؟ تو یه سشن `claude` توی ترمینال `/plugin configure persian-rtl@persian-rtl` رو بزن و `rightAlign` رو `false` کن.
+</details>
 
-## محدودیت‌ها
+<details>
+<summary><b>Word order only, no right-alignment</b></summary>
 
-- کادری که توش تایپ می‌کنی دست پلاگین نیست. پیامت بعد از ارسال درست نشون داده می‌شه.
-- راست‌چین فقط روی جواب‌های Claude تو اپ دسکتاپه.
-- فقط تو Claude Code کار می‌کنه، روی بخش Chat و claude.ai اثری نداره.
+In a terminal `claude` session:
+
+```
+/plugin configure persian-rtl@persian-rtl
+```
+
+Set `rightAlign` to `false`. Word order is still fixed everywhere.
+
+</details>
+
+<details>
+<summary><b>Local / development</b></summary>
+
+```bash
+git clone https://github.com/amirmvahed/claude-code-persian-rtl.git
+claude --plugin-dir /path/to/claude-code-persian-rtl
+```
+
+</details>
+
+---
+
+## How It Works
+
+Two hooks on Claude Code's message rendering, nothing else.
+
+1. **Detect.** Each line is judged mostly Persian or not, by counting words.
+2. **Isolate.** Mostly-Persian lines are wrapped in Unicode bidi isolate marks (U+2067 … U+2069), so the line is laid out right to left inside the left-to-right page.
+3. **Align (desktop only).** The desktop app gives plugins no text-alignment setting, so the plugin draws Claude's reply itself: it breaks each Persian paragraph into lines and pushes each line to the right edge.
+
+**Key design choices:**
+
+- **Isolate, don't reorder.** The plugin never moves your characters around. It marks direction and lets the renderer do the layout.
+- **Words, not letters.** One long English word (`screenshot`) doesn't outweigh the Persian sentence around it. A tie goes to whichever script comes first.
+- **Code is never touched.** Fenced code blocks are skipped, and inline code and link URLs don't count toward "mostly Persian".
+- **Markdown stays markdown.** List markers, headings, quotes and wrapping `**bold**` stay outside the isolate, so formatting still renders.
+
+---
+
+## Known Issues
+
+| Issue | Why |
+|-------|-----|
+| Some desktop lines wrap a little early | Line width is estimated from the window size |
+| The input box isn't fixed | Plugins can't touch it. Your message looks right once sent |
+| Right-alignment is replies-only, desktop-only | Your messages and the terminal get the word-order fix |
+| No effect on the Chat tab or claude.ai | It's a Claude Code plugin |
+
+---
+
+## Why This Plugin?
+
+Persian and English mix constantly in technical work: file names, commands, library names, error messages. The Unicode bidi algorithm handles a pure Persian line fine and a mixed one badly, because the page around it runs left to right. Claude Code renders everything left to right, so every mixed sentence comes out jumbled and every Persian paragraph hugs the wrong edge.
+
+The fix isn't translation or a new font. It's telling the renderer which way each line runs and, on the desktop, which side it belongs on.
+
+---
+
+## Contributing
+
+Issues and pull requests are welcome. The detection and isolate logic lives in [`hooks/bidi.ts`](hooks/bidi.ts) with its tests in [`hooks/bidi.test.ts`](hooks/bidi.test.ts); the render hooks are in [`hooks/register.ts`](hooks/register.ts). A screenshot of the broken text helps more than a description of it.
+
+---
 
 ## License
 
+MIT - use it, fork it, ship it.
+
+---
+
+<a id="fa"></a>
+
+<div dir="rtl">
+
+# راست‌چین فارسی برای Claude Code
+
+**فارسیِ راست‌به‌چپ که درست خونده می‌شه، هم تو اپ دسکتاپ هم تو ترمینال.**
+
+یه کلمه‌ی انگلیسی، اسم یه فایل یا یه عدد وسط جمله‌ی فارسی بیاد، کل خط به هم می‌ریزه. همه‌چی هم چپ‌چینه. این پلاگین هر دو رو درست می‌کنه: ترتیب کلمه‌ها همون‌طوری درمیاد که نوشتی، و تو اپ دسکتاپ جواب‌های فارسی Claude راست‌چین می‌شن.
+
+[English](#persian-rtl-for-claude-code) · **فارسی**
+
+---
+
+## چی درست می‌شه
+
+| کجا | ترتیب کلمه‌ها | راست‌چین |
+|-----|:------------:|:--------:|
+| جواب‌های Claude، اپ دسکتاپ | ✓ | ✓ پاراگراف، لیست، جدول |
+| جواب‌های Claude، ترمینال | ✓ | — |
+| پیام‌های خودت، همه‌جا | ✓ بعد از ارسال | — |
+| بلوک کد و متن انگلیسی | دست‌نخورده | سمت چپ می‌مونن |
+
+شماره و بولت لیست‌ها سمت راست می‌مونه، جدول‌ها آینه می‌شن. کد، عدد و کلمه‌ی انگلیسی دقیقاً همون‌جایی می‌مونن که نوشتی.
+
+---
+
+## نصب سریع
+
+**دو تا دستور، تو هر ترمینالی:**
+
+<div dir="ltr">
+
+```bash
+claude plugin marketplace add amirmvahed/claude-code-persian-rtl
+```
+
+```bash
+claude plugin install persian-rtl@persian-rtl --scope user
+```
+
+</div>
+
+یه سشن جدید باز کن، یا تو همون سشن بازت `/reload-plugins` رو بزن. تمام.
+
+<details>
+<summary><b>اپ دسکتاپ</b></summary>
+
+همون دو تا دستور بالا رو تو ترمینال بزن. `/plugin install` رو تو کادر چت دسکتاپ نزن: اون‌جا کاری نمی‌کنه، و پلاگین تو لیست پلاگین‌های اپ هم دیده نمی‌شه. ولی نصب شده و کار می‌کنه.
+
+</details>
+
+<details>
+<summary><b>از داخل سشن <code>claude</code> تو ترمینال</b></summary>
+
+<div dir="ltr">
+
+```
+/plugin install persian-rtl --marketplace amirmvahed/claude-code-persian-rtl
+```
+
+</div>
+
+برای اضافه شدن marketplace بزن `y` و بعد scope رو انتخاب کن.
+
+</details>
+
+<details>
+<summary><b>فقط ترتیب کلمه‌ها، بدون راست‌چین</b></summary>
+
+تو یه سشن `claude` توی ترمینال:
+
+<div dir="ltr">
+
+```
+/plugin configure persian-rtl@persian-rtl
+```
+
+</div>
+
+`rightAlign` رو `false` کن. ترتیب کلمه‌ها همچنان همه‌جا درسته.
+
+</details>
+
+---
+
+## اصول طراحی
+
+- **جداسازی، نه جابه‌جایی.** پلاگین هیچ حرفی رو جابه‌جا نمی‌کنه، فقط جهت هر خط رو با علامت‌های یونیکد مشخص می‌کنه و چیدمان رو می‌سپره به خود رندرر.
+- **کلمه می‌شمره، نه حرف.** یه کلمه‌ی انگلیسیِ بلند جمله‌ی فارسیِ دورش رو چپ‌به‌راست نمی‌کنه.
+- **به کد دست نمی‌زنه.** بلوک‌های کد کنار گذاشته می‌شن، و کد و آدرس لینک تو تشخیص «بیشترش فارسیه» حساب نمی‌شن.
+- **مارک‌داون سالم می‌مونه.** علامت لیست، تیتر، نقل‌قول و بولد بیرون از ناحیه‌ی جداشده می‌مونن تا درست رندر بشن.
+
+---
+
+## محدودیت‌ها
+
+| محدودیت | چرا |
+|---------|-----|
+| بعضی خط‌ها تو دسکتاپ یه کم زودتر می‌شکنن | عرض خط از روی اندازه‌ی پنجره تخمین زده می‌شه |
+| کادر تایپ درست نمی‌شه | دست پلاگین نیست. پیامت بعد از ارسال درست نشون داده می‌شه |
+| راست‌چین فقط روی جواب‌های Claude تو دسکتاپه | پیام‌های خودت و ترمینال فقط ترتیب کلمه‌ها رو می‌گیرن |
+| روی بخش Chat و claude.ai اثری نداره | پلاگین مال Claude Code‌ه |
+
+---
+
+## مشارکت
+
+ایشو و پول‌ریکوئست با کمال میل. یه اسکرین‌شات از متن به‌هم‌ریخته از هر توضیحی بیشتر کمک می‌کنه.
+
+## لایسنس
+
 MIT
+
+</div>
