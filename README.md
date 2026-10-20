@@ -1,28 +1,24 @@
 # Persian RTL for Claude Code
 
-Fixes mixed Persian/English text in the Claude Code desktop app. Replies look exactly as Claude Code draws them; only the lines whose direction comes out wrong are fixed.
-
-**English** · [فارسی](#fa)
+Fixes Persian/English text direction issues in the Claude Code desktop app. It preserves Claude Code's original rendering and fixes only the lines whose text direction is incorrect.
 
 ## Install
 
-Run in any terminal:
+Run these commands in a **terminal**:
 
 ```bash
 claude plugin marketplace add amirmvahed/claude-code-persian-rtl
-```
 
-```bash
 claude plugin install persian-rtl@persian-rtl --scope user
 ```
 
-Then open a new session. Don't type `/plugin install` in the desktop chat box: it does nothing there.
+Then start a new session or run `/reload-plugins`.
 
 ## Auto-update
 
-Off by default for community plugins. Turn it on once: run `claude` in a terminal, type `/plugin`, open **Marketplaces**, pick **persian-rtl**, choose **Enable auto-update**.
+Auto-updates are disabled by default for community plugins. To enable them, run `claude` in a terminal, enter `/plugin`, open **Marketplaces**, select **persian-rtl**, and choose **Enable auto-update**.
 
-To update by hand instead:
+To update manually:
 
 ```bash
 claude plugin update persian-rtl@persian-rtl
@@ -30,78 +26,14 @@ claude plugin update persian-rtl@persian-rtl
 
 ## What it does
 
-The desktop app puts each paragraph on the right or left by its first letter, as Unicode and browsers do. A line with Persian in it that starts with an English word, a file name or `code` jumps left and its words scramble. The plugin adds an invisible direction mark (RLM) to just those lines, so any line holding a Persian word reads right to left; English runs inside it stay left to right. Lines with no Persian and code blocks are never touched.
+The desktop app determines paragraph direction based on the first character, following Unicode bidirectional text behavior. When a line contains Persian but starts with an English word, a filename, or code, it may be displayed in the wrong direction, making the text difficult to read.
 
-## Limits
+The plugin adds an invisible right-to-left mark (RLM) to affected lines, helping Persian text flow from right to left while keeping embedded English text left to right. Lines without Persian text and code blocks are left untouched.
 
-- The input box isn't fixed; your message looks right once sent.
-- No effect in the terminal: Claude Code strips direction marks there.
-- Claude Code only, not claude.ai.
+## Limitations
 
-## Develop
-
-```bash
-claude --plugin-dir /path/to/claude-code-persian-rtl
-```
-
-Logic in [`hooks/bidi.ts`](hooks/bidi.ts), tests in [`hooks/bidi.test.ts`](hooks/bidi.test.ts) (`claude plugin test .`). A screenshot of broken text helps most in an issue.
+- The input box is not affected; your message is displayed correctly after you send it.
+- The plugin has no effect in the terminal because Claude Code strips direction marks there.
+- Works with Claude Code only, not claude.ai.
 
 MIT license.
-
----
-
-<a id="fa"></a>
-
-<div dir="rtl">
-
-# راست‌چین فارسی برای Claude Code
-
-متن فارسی و انگلیسیِ قاطی رو تو اپ دسکتاپ Claude Code درست می‌کنه. جواب‌ها همون شکلی می‌مونن که خود Claude Code نشون می‌ده؛ فقط خط‌هایی که جهتشون اشتباه درمیاد درست می‌شن.
-
-[English](#persian-rtl-for-claude-code) · **فارسی**
-
-## نصب
-
-این دو دستور رو تو ترمینال بزن:
-
-<div dir="ltr">
-
-```bash
-claude plugin marketplace add amirmvahed/claude-code-persian-rtl
-```
-
-```bash
-claude plugin install persian-rtl@persian-rtl --scope user
-```
-
-</div>
-
-بعد یه session جدید باز کن. `/plugin install` رو تو کادر چت دسکتاپ نزن، اون‌جا کار نمی‌کنه.
-
-## آپدیت خودکار
-
-برای پلاگین‌های غیررسمی پیش‌فرض خاموشه. یه بار روشنش کن: تو ترمینال `claude` رو اجرا کن، `/plugin` رو بزن، برو تو **Marketplaces**، **persian-rtl** رو انتخاب کن و **Enable auto-update** رو بزن.
-
-یا دستی آپدیت کن:
-
-<div dir="ltr">
-
-```bash
-claude plugin update persian-rtl@persian-rtl
-```
-
-</div>
-
-## چی کار می‌کنه
-
-اپ دسکتاپ جهت هر پاراگراف رو از حرف اولش می‌فهمه، مثل استاندارد یونیکد و مرورگرها. خطی که فارسی داره ولی با کلمه‌ی انگلیسی، اسم فایل یا کد شروع می‌شه می‌پره سمت چپ و کلمه‌هاش به هم می‌ریزن. پلاگین فقط جلوی همین خط‌ها یه علامت نامرئی جهت (RLM) می‌ذاره، پس هر خطی که حتی یه کلمه‌ی فارسی داشته باشه راست‌به‌چپ خونده می‌شه و تیکه‌های انگلیسیش چپ‌به‌راست می‌مونن. به خط‌های بدون فارسی و بلوک کد دست نمی‌زنه.
-
-## محدودیت‌ها
-
-- کادر تایپ درست نمی‌شه؛ پیامت بعد از ارسال درست نشون داده می‌شه.
-- تو ترمینال اثری نداره، چون Claude Code اون‌جا علامت‌های جهت رو حذف می‌کنه.
-- فقط برای Claude Code‌ه، نه claude.ai.
-
-لایسنس MIT.
-
-</div>
