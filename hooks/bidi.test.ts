@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { fixBidi, isRtl, LRM, RLM } from './bidi'
+import { fixBidi, isRtl, RLM } from './bidi'
 
 test('leaves a line alone when its first letter already gives its direction', async () => {
   const lines = [
@@ -20,10 +20,18 @@ test('marks a Persian line that opens with an English word', async () => {
   )
 })
 
-test('marks an English line that opens with a Persian word', async () => {
-  expect(fixBidi('سلام, run the tests and check the output')).toBe(
-    `${LRM}سلام, run the tests and check the output`,
-  )
+test('a line that opens in Persian stays right to left, even when mostly English', async () => {
+  const line = 'فایل‌ها, run the tests and then check the output carefully.'
+  expect(fixBidi(line)).toBe(line)
+})
+
+test('a mostly-Persian message opening with a lowercase English word is marked', async () => {
+  expect(fixBidi('claude اینو درست کن')).toBe(`${RLM}claude اینو درست کن`)
+})
+
+test('a mostly-English line opening in English stays left to right', async () => {
+  const line = 'Open the فایل now and run it'
+  expect(fixBidi(line)).toBe(line)
 })
 
 test('keeps markdown syntax before the mark', async () => {

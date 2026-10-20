@@ -30,7 +30,7 @@ claude plugin update persian-rtl@persian-rtl
 
 ## What it does
 
-The desktop app puts each paragraph on the right or left by its first letter. A Persian line that starts with an English word, a file name or `code` jumps left and its words scramble. The plugin adds an invisible direction mark (RLM/LRM) to just those lines. Code blocks are never touched.
+The desktop app puts each paragraph on the right or left by its first letter, as Unicode and browsers do: a line that starts in Persian is right to left. A mostly-Persian line that starts with an English word, a file name or `code` jumps left and its words scramble. The plugin adds an invisible direction mark (RLM) to just those lines. Code blocks are never touched.
 
 ## Limits
 
@@ -94,7 +94,7 @@ claude plugin update persian-rtl@persian-rtl
 
 ## چی کار می‌کنه
 
-اپ دسکتاپ جهت هر پاراگراف رو از حرف اولش می‌فهمه. خط فارسی‌ای که با کلمه‌ی انگلیسی، اسم فایل یا کد شروع بشه می‌پره سمت چپ و کلمه‌هاش به هم می‌ریزن. پلاگین فقط جلوی همین خط‌ها یه علامت نامرئی جهت (RLM/LRM) می‌ذاره. به بلوک کد دست نمی‌زنه.
+اپ دسکتاپ جهت هر پاراگراف رو از حرف اولش می‌فهمه، مثل استاندارد یونیکد و مرورگرها: خطی که با فارسی شروع بشه راست‌به‌چپه. خطی که بیشترش فارسیه ولی با کلمه‌ی انگلیسی، اسم فایل یا کد شروع می‌شه می‌پره سمت چپ و کلمه‌هاش به هم می‌ریزن. پلاگین فقط جلوی همین خط‌ها یه علامت نامرئی جهت (RLM) می‌ذاره. به بلوک کد دست نمی‌زنه.
 
 ## محدودیت‌ها
 

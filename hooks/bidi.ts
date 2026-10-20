@@ -1,15 +1,14 @@
 // The desktop sets each paragraph, list item, heading and table cell's
-// direction from its first strong letter, and lays it out and aligns it to
-// match: a Persian paragraph runs right to left on the right edge. It guesses
-// wrong when a mostly-Persian line opens with an English word, a file name or
-// inline code ("Claude یه فایل..."), and the other way round. Such a line gets
-// an invisible mark (RLM U+200F or LRM U+200E) as its first letter, so the
-// guess comes out right; every other line is left exactly as written.
+// direction from its first strong letter, as Unicode and HTML do: a line that
+// opens in Persian runs right to left on the right edge, however much English
+// follows. It misses a mostly-Persian line that opens with an English word, a
+// file name or inline code ("Claude یه فایل..."). Such a line gets an RLM
+// (U+200F) as its first letter; every other line is left exactly as written.
 // Markdown syntax at the start of a line (lists, headings, quotes, wrapping
 // emphasis) stays before the mark; fenced code blocks are left alone.
 
 export const RLM = '‏'
-export const LRM = '‎'
+const LRM = '‎'
 
 const RTL_LETTER = '֐-ࣿיִ-﷿ﹰ-﻿'
 const LTR_LETTER = 'A-Za-zÀ-ɏ'
@@ -54,14 +53,11 @@ function opensRtl(text: string): boolean | undefined {
 
 export function mark(text: string): string {
   const [, prefix, body, trailing] = PREFIX.exec(text) ?? ['', '', text, '']
-  const opens = opensRtl(body)
-  if (opens === undefined || !HAS_RTL.test(body)) return text
-  const rtl = isRtl(body)
-  if (opens === rtl) return text
+  if (opensRtl(body) !== false || !isRtl(body)) return text
   // After an opening `**`, not before it: a `**` right before a mark and
   // punctuation would no longer open bold.
   const [, open, inner, close] = EMPHASIS.exec(body) ?? ['', '', body, '']
-  return `${prefix}${open}${rtl ? RLM : LRM}${inner}${close}${trailing}`
+  return `${prefix}${open}${RLM}${inner}${close}${trailing}`
 }
 
 function markCells(row: string): string {
