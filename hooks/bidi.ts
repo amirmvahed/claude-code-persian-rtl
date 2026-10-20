@@ -74,8 +74,7 @@ function listItems(lines: string[]): Item[] | undefined {
   for (const line of lines) {
     const match = LIST_ITEM.exec(line)
     if (match) raw.push({ marker: match[1], body: match[2] })
-    else if (/^\s/.test(line)) raw[raw.length - 1].body += ` ${line.trim()}`
-    else return undefined
+    else raw[raw.length - 1].body += ` ${line.trim()}`
   }
   if (!raw.some(item => isRtl(item.body))) return undefined
 
@@ -107,30 +106,80 @@ function mirrorTable(lines: string[]): string | undefined {
   return rows.map(row => `|${[...row].reverse().join('|')}|`).join('\n')
 }
 
-// Splits markdown into blocks at blank lines outside code fences, each marked
-// RTL when its prose (code fences left out) is mostly Persian.
-export function splitBlocks(text: string): Block[] {
-  const blocks: string[][] = [[]]
+type Kind = 'fence' | 'heading' | 'list' | 'table' | 'quote' | 'prose'
+
+function kindOf(line: string): Kind {
+  if (FENCE.test(line)) return 'fence'
+  if (/^\s*#{1,6}\s/.test(line)) return 'heading'
+  if (LIST_ITEM.test(line)) return 'list'
+  if (TABLE_ROW.test(line)) return 'table'
+  if (/^\s*>/.test(line)) return 'quote'
+  return 'prose'
+}
+
+// Cuts a run of lines with no blank line between them where markdown starts
+// a new block: a bold title straight above a list is two blocks, not one
+// paragraph. A prose line after a list item or a quote continues it, as
+// markdown reads it; a heading is a block of its own.
+function segments(lines: string[]): string[][] {
+  const out: string[][] = []
+  let kind: Kind | undefined
+  let inFence = false
+  for (const line of lines) {
+    if (inFence) {
+      out[out.length - 1].push(line)
+      if (FENCE.test(line)) inFence = false
+      continue
+    }
+    const next = kindOf(line)
+    const continues =
+      kind !== undefined &&
+      kind !== 'heading' &&
+      kind !== 'fence' &&
+      next !== 'heading' &&
+      next !== 'fence' &&
+      (next === kind || (next === 'prose' && (kind === 'list' || kind === 'quote')))
+    if (continues) out[out.length - 1].push(line)
+    else {
+      out.push([line])
+      kind = next
+    }
+    if (next === 'fence') inFence = true
+  }
+  return out
+}
+
+function toBlock(lines: string[]): Block {
+  const block = lines.join('\n')
+  if (FENCE.test(block)) return { text: block, isRtl: false }
+  const items = listItems(lines)
+  if (items) return { text: block, isRtl: true, items }
+  const table = mirrorTable(lines)
+  if (table) return { text: table, isRtl: true }
+  return { text: block, isRtl: isRtl(block) }
+}
+
+// Splits markdown into groups at blank lines outside code fences, and each
+// group into its blocks, each marked RTL when its prose (code fences left
+// out) is mostly Persian.
+export function splitGroups(text: string): Block[][] {
+  const groups: string[][] = [[]]
   let inFence = false
   for (const line of text.split('\n')) {
     if (FENCE.test(line)) inFence = !inFence
     if (!inFence && line.trim() === '') {
-      if (blocks[blocks.length - 1].length > 0) blocks.push([])
+      if (groups[groups.length - 1].length > 0) groups.push([])
       continue
     }
-    blocks[blocks.length - 1].push(line)
+    groups[groups.length - 1].push(line)
   }
-  return blocks
+  return groups
     .filter(lines => lines.length > 0)
-    .map((lines): Block => {
-      const block = lines.join('\n')
-      if (FENCE.test(block)) return { text: block, isRtl: false }
-      const items = listItems(lines)
-      if (items) return { text: block, isRtl: true, items }
-      const table = mirrorTable(lines)
-      if (table) return { text: table, isRtl: true }
-      return { text: block, isRtl: isRtl(block) }
-    })
+    .map(lines => segments(lines).map(toBlock))
+}
+
+export function splitBlocks(text: string): Block[] {
+  return splitGroups(text).flat()
 }
 
 // A paragraph of prose: no heading, quote, table, list or fence syntax.

@@ -1,6 +1,6 @@
 import type { Register } from 'claude-code'
 
-import { fixBidi, isolate, isProse, splitBlocks, wrapLines } from './bidi'
+import { type Block, fixBidi, isolate, isProse, splitGroups, wrapLines } from './bidi'
 
 // The desktop reports its width in cells of its code font; a prose character
 // takes about 0.7 of one. Lines are cut at a little under what fits, and the
@@ -20,8 +20,8 @@ export const register: Register = on => {
   // its own row pushed right, which reads as right-aligned text.
   on('ui.render', { component: 'AssistantMessage' }, ($, e, next) => {
     if (!withMarks(e)) return next(e)
-    const blocks = splitBlocks(e.props.text)
-    if (e.surface !== 'desktop' || !blocks.some(b => b.isRtl)) {
+    const groups = splitGroups(e.props.text)
+    if (e.surface !== 'desktop' || !groups.flat().some(b => b.isRtl)) {
       return next({ ...e, props: { ...e.props, text: fixBidi(e.props.text) } })
     }
 
@@ -42,21 +42,35 @@ export const register: Register = on => {
         children: wrapLines(raw, budget).map(line => row(isolate(line, true), true)),
       })
 
+    const draw = (block: Block) => {
+      if (block.items) {
+        // Items that run over several lines get a row between them, so it
+        // shows where one ends and the next begins.
+        const wraps = block.items.some(
+          item => item.isRtl && wrapLines(item.raw, budget).length > 1,
+        )
+        return Box({
+          flexDirection: 'column',
+          rowGap: wraps ? 1 : 0,
+          children: block.items.map(item =>
+            item.isRtl ? rtlLines(item.raw) : row(item.text, false),
+          ),
+        })
+      }
+      if (block.isRtl && isProse(block.text)) return rtlLines(block.text)
+      return row(fixBidi(block.text), block.isRtl)
+    }
+
+    // A blank line in the reply puts a gap between blocks; blocks with no
+    // blank line between them, such as a bold title and its list, stay close.
     return Box({
       flexDirection: 'column',
       rowGap: 1,
-      children: blocks.map(block => {
-        if (block.items) {
-          return Box({
-            flexDirection: 'column',
-            children: block.items.map(item =>
-              item.isRtl ? rtlLines(item.raw) : row(item.text, false),
-            ),
-          })
-        }
-        if (block.isRtl && isProse(block.text)) return rtlLines(block.text)
-        return row(fixBidi(block.text), block.isRtl)
-      }),
+      children: groups.map(group =>
+        group.length === 1
+          ? draw(group[0])
+          : Box({ flexDirection: 'column', children: group.map(draw) }),
+      ),
     })
   })
 

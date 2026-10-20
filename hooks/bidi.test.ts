@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { fixBidi, isRtl, PDI, RLI, splitBlocks, wrapLines } from './bidi'
+import { fixBidi, isRtl, PDI, RLI, splitBlocks, splitGroups, wrapLines } from './bidi'
 
 test('wraps a Persian line with English words in an RTL isolate', async () => {
   expect(fixBidi('فایل `page.tsx` رو باز کن.')).toBe(
@@ -191,4 +191,56 @@ test('carries bold across a break and escapes list-like line starts', async () =
     '**چهار** پنج',
   ])
   expect(wrapLines('عدد اول 1. دوم', 7)).toEqual(['عدد اول', '\\1. دوم'])
+})
+
+test('a bold title straight above a list stays its own block', async () => {
+  const text = [
+    '**برای کدهای راهداری کمک نمی‌کند**',
+    '- لایه‌ی شهر و آبادی نقطه‌ی راهداری ندارد.',
+    '- کدهای وزارت کشور با کدهای راهداری فرق دارند.',
+    '',
+    '**پیشنهاد**',
+    '1. مرز وزارت کشور را فقط برای ۲۲۰ واحد بگذارم.',
+    '2. ستون‌های کد را اضافه کنم.',
+  ].join('\n')
+  const groups = splitGroups(text)
+  expect(groups.map(group => group.length)).toEqual([2, 2])
+  expect(groups[0][0]).toEqual({ text: '**برای کدهای راهداری کمک نمی‌کند**', isRtl: true })
+  expect(groups[0][1].items?.map(item => item.raw)).toEqual([
+    '• لایه‌ی شهر و آبادی نقطه‌ی راهداری ندارد.',
+    '• کدهای وزارت کشور با کدهای راهداری فرق دارند.',
+  ])
+  expect(groups[1][1].items).toHaveLength(2)
+})
+
+test('headings, fences and tables split off the prose around them', async () => {
+  const text = ['## عنوان', 'متن زیر عنوان', '```', 'code', '```', '| الف | ب |', '| --- | --- |'].join('\n')
+  expect(splitBlocks(text).map(block => block.text.split('\n')[0])).toEqual([
+    '## عنوان',
+    'متن زیر عنوان',
+    '```',
+    '| ب | الف |',
+  ])
+})
+
+test('a prose line under a list item continues the item', async () => {
+  const items = splitBlocks('- یک\nادامه‌ی یک\n- دو')[0].items
+  expect(items?.map(item => item.raw)).toEqual(['• یک ادامه‌ی یک', '• دو'])
+})
+
+test('list items that wrap get a row between them on the desktop', async $ => {
+  const gaps = async (text: string) => {
+    const ui = await $.ui.mount({
+      plugin: 'persian-rtl',
+      surface: 'desktop',
+      component: 'AssistantMessage',
+      props: { text, isFirstOfReply: true },
+    })
+    const drawn = JSON.stringify(await ui.drawn())
+    await ui.unmount()
+    return drawn.split('"rowGap":1').length - 1
+  }
+  const long = 'این یک مورد خیلی بلند است که '.repeat(8)
+  expect(await gaps('- یک\n- دو')).toBe(1)
+  expect(await gaps(`- ${long}\n- ${long}`)).toBe(2)
 })
