@@ -1,6 +1,6 @@
 # Persian RTL for Claude Code
 
-**Right-to-left Persian that actually reads right, in the desktop app and the terminal.**
+**Right-to-left Persian that actually reads right in the Claude Code desktop app.**
 
 Drop one English word, a file name or a number into a Persian sentence and the whole line scrambles. Everything sits on the left. This plugin fixes both: word order comes out the way you wrote it, and on the desktop app Claude's Persian replies are right-aligned.
 
@@ -23,8 +23,8 @@ Drop one English word, a file name or a number into a Persian sentence and the w
 | Where | Word order fixed | Right-aligned |
 |-------|:----------------:|:-------------:|
 | Claude's replies, desktop app | ✓ | ✓ paragraphs, lists, tables |
-| Claude's replies, terminal | ✓ | — |
-| Your own messages, anywhere | ✓ once sent | — |
+| Claude's replies, terminal | up to your terminal | — |
+| Your own messages, desktop app | ✓ once sent | — |
 | Code blocks and English text | left as is | stay on the left |
 
 Lists keep their numbers and bullets on the right. Tables get mirrored. `Inline code`, numbers and English words stay exactly where you put them.
@@ -98,7 +98,8 @@ Two hooks on Claude Code's message rendering, nothing else.
 |-------|-----|
 | Some desktop lines wrap a little early | Line width is estimated from the window size |
 | The input box isn't fixed | Plugins can't touch it. Your message looks right once sent |
-| Right-alignment is replies-only, desktop-only | Your messages and the terminal get the word-order fix |
+| Right-alignment is replies-only, desktop-only | Your own messages get the word-order fix only |
+| The plugin does nothing in the terminal | Claude Code strips or replaces every direction mark there. A terminal that handles right-to-left text itself, such as macOS Terminal, lays it out on its own |
 | No effect on the Chat tab or claude.ai | It's a Claude Code plugin |
 
 ---
@@ -129,7 +130,7 @@ MIT - use it, fork it, ship it.
 
 # راست‌چین فارسی برای Claude Code
 
-**فارسیِ راست‌به‌چپ که درست خونده می‌شه، هم تو اپ دسکتاپ هم تو ترمینال.**
+**فارسیِ راست‌به‌چپ که تو اپ دسکتاپ Claude Code درست خونده می‌شه.**
 
 یه کلمه‌ی انگلیسی، اسم یه فایل یا یه عدد وسط جمله‌ی فارسی بیاد، کل خط به هم می‌ریزه. همه‌چی هم چپ‌چینه. این پلاگین هر دو رو درست می‌کنه: ترتیب کلمه‌ها همون‌طوری درمیاد که نوشتی، و تو اپ دسکتاپ جواب‌های فارسی Claude راست‌چین می‌شن.
 
@@ -142,8 +143,8 @@ MIT - use it, fork it, ship it.
 | کجا | ترتیب کلمه‌ها | راست‌چین |
 |-----|:------------:|:--------:|
 | جواب‌های Claude، اپ دسکتاپ | ✓ | ✓ پاراگراف، لیست، جدول |
-| جواب‌های Claude، ترمینال | ✓ | — |
-| پیام‌های خودت، همه‌جا | ✓ بعد از ارسال | — |
+| جواب‌های Claude، ترمینال | بسته به ترمینالت | — |
+| پیام‌های خودت، اپ دسکتاپ | ✓ بعد از ارسال | — |
 | بلوک کد و متن انگلیسی | دست‌نخورده | سمت چپ می‌مونن |
 
 شماره و بولت لیست‌ها سمت راست می‌مونه، جدول‌ها آینه می‌شن. کد، عدد و کلمه‌ی انگلیسی دقیقاً همون‌جایی می‌مونن که نوشتی.
@@ -207,7 +208,8 @@ claude plugin install persian-rtl@persian-rtl --scope user
 |---------|-----|
 | بعضی خط‌ها تو دسکتاپ یه کم زودتر می‌شکنن | عرض خط از روی اندازه‌ی پنجره تخمین زده می‌شه |
 | کادر تایپ درست نمی‌شه | دست پلاگین نیست. پیامت بعد از ارسال درست نشون داده می‌شه |
-| راست‌چین فقط روی جواب‌های Claude تو دسکتاپه | پیام‌های خودت و ترمینال فقط ترتیب کلمه‌ها رو می‌گیرن |
+| راست‌چین فقط روی جواب‌های Claude تو دسکتاپه | پیام‌های خودت فقط ترتیب کلمه‌ها رو می‌گیرن |
+| تو ترمینال پلاگین کاری نمی‌کنه | Claude Code اون‌جا همه‌ی علامت‌های جهت رو حذف یا عوض می‌کنه. ترمینالی که خودش راست‌به‌چپ رو بلده، مثل Terminal مک، خودش درستش می‌کنه |
 | روی بخش Chat و claude.ai اثری نداره | پلاگین مال Claude Code‌ه |
 
 ---

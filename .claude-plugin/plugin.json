@@ -1,6 +1,6 @@
 {
   "name": "persian-rtl",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Fixes mixed Persian/English (RTL) text in Claude Code: keeps word order right and right-aligns Persian paragraphs, lists and tables on the desktop app",
   "author": {
     "name": "Amir Vahed"

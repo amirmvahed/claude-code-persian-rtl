@@ -50,7 +50,7 @@ test('is idempotent', async () => {
   expect(fixBidi(once)).toBe(once)
 })
 
-test('the rewritten message reaches the desktop and terminal', async ($, on) => {
+test('the rewritten message reaches the desktop, not the terminal', async ($, on) => {
   // Stands in for the engine: draws whatever text the plugin hands down as
   // Markdown, so the surface's validation sees the isolate marks.
   on('ui.render', { component: 'AssistantMessage' }, ($, e) => {
@@ -65,7 +65,9 @@ test('the rewritten message reaches the desktop and terminal', async ($, on) => 
       component: 'AssistantMessage',
       props: { text: 'مشکل `rtl` حل شد', isFirstOfReply: true },
     })
-    expect(JSON.stringify(await ui.drawn())).toContain(RLI)
+    const drawn = JSON.stringify(await ui.drawn())
+    if (surface === 'desktop') expect(drawn).toContain(RLI)
+    else expect(drawn).not.toContain(RLI)
     await ui.unmount()
   }
 })

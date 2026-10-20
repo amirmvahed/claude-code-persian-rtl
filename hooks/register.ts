@@ -8,12 +8,18 @@ import { fixBidi, isolate, isProse, splitBlocks, wrapLines } from './bidi'
 const PROSE_PER_CELL = 1.2
 const MAX_CELLS = 95
 
+// The terminal draws no bidi marks: it drops RLM and LRM and draws every
+// other one (RLI, PDI, RLE, ALM) as U+FFFD. A terminal that lays out
+// right-to-left text itself, as macOS Terminal does, gets the text as written.
+const withMarks = (e: { surface: string }) => e.surface !== 'terminal'
+
 export const register: Register = on => {
   // Desktop only: draws the reply itself, pushing mostly-Persian
   // paragraphs and list items to the right edge. No surface takes a text
   // alignment, so a long Persian paragraph is broken into lines here, each
   // its own row pushed right, which reads as right-aligned text.
   on('ui.render', { component: 'AssistantMessage' }, ($, e, next) => {
+    if (!withMarks(e)) return next(e)
     const blocks = splitBlocks(e.props.text)
     if (e.surface !== 'desktop' || !blocks.some(b => b.isRtl)) {
       return next({ ...e, props: { ...e.props, text: fixBidi(e.props.text) } })
@@ -55,6 +61,6 @@ export const register: Register = on => {
   })
 
   on('ui.render', { component: 'UserMessage' }, ($, e, next) =>
-    next({ ...e, props: { ...e.props, text: fixBidi(e.props.text) } }),
+    withMarks(e) ? next({ ...e, props: { ...e.props, text: fixBidi(e.props.text) } }) : next(e),
   )
 }
