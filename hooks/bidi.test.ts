@@ -13,7 +13,7 @@ test('leaves a line alone when its first letter already gives its direction', as
   for (const line of lines) expect(fixBidi(line)).toBe(line)
 })
 
-test('marks a Persian line that opens with an English word', async () => {
+test('marks a line with Persian that opens with an English word', async () => {
   expect(fixBidi('Claude یه فایل جدید ساخت.')).toBe(`${RLM}Claude یه فایل جدید ساخت.`)
   expect(fixBidi('`moi_download.py` چهار لایه را ذخیره می‌کند')).toBe(
     `${RLM}\`moi_download.py\` چهار لایه را ذخیره می‌کند`,
@@ -25,13 +25,15 @@ test('a line that opens in Persian stays right to left, even when mostly English
   expect(fixBidi(line)).toBe(line)
 })
 
-test('a mostly-Persian message opening with a lowercase English word is marked', async () => {
+test('a message opening with a lowercase English word is marked', async () => {
   expect(fixBidi('claude اینو درست کن')).toBe(`${RLM}claude اینو درست کن`)
 })
 
-test('a mostly-English line opening in English stays left to right', async () => {
-  const line = 'Open the فایل now and run it'
-  expect(fixBidi(line)).toBe(line)
+test('one Persian word turns an English-led line right to left', async () => {
+  expect(fixBidi('Open the فایل now and run it')).toBe(`${RLM}Open the فایل now and run it`)
+  expect(fixBidi('Please open فایل تنظیمات پروژه and check it')).toBe(
+    `${RLM}Please open فایل تنظیمات پروژه and check it`,
+  )
 })
 
 test('keeps markdown syntax before the mark', async () => {
@@ -97,13 +99,9 @@ test('the desktop draws the reply as usual, with the marks; the terminal gets it
   }
 })
 
-test('inline code does not count toward a line\'s direction', async () => {
+test('Persian inside inline code or a link target does not count', async () => {
   expect(isRtl('اول `git status` را اجرا کن')).toBe(true)
   expect(isRtl('Run `پیکربندی` now please')).toBe(false)
-})
-
-test('one long English word does not outweigh a Persian sentence', async () => {
-  expect(isRtl('یک screenshot بفرست.')).toBe(true)
-  expect(isRtl('Next.js یک فریمورک')).toBe(true)
-  expect(isRtl('Open the فایل now')).toBe(false)
+  expect(isRtl('See [the docs](https://fa.wikipedia.org/wiki/فارسی) first')).toBe(false)
+  expect(fixBidi('Run `پیکربندی` now please')).toBe('Run `پیکربندی` now please')
 })
