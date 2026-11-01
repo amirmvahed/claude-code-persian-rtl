@@ -105,3 +105,21 @@ test('Persian inside inline code or a link target does not count', async () => {
   expect(isRtl('See [the docs](https://fa.wikipedia.org/wiki/فارسی) first')).toBe(false)
   expect(fixBidi('Run `پیکربندی` now please')).toBe('Run `پیکربندی` now please')
 })
+
+test('a Persian line opening with an emoji is marked before the emoji', async () => {
+  expect(fixBidi('❓ **Q1 - مکانیزم جلوگیری از refresh تکراری:** دو راه هست:')).toBe(
+    `${RLM}❓ **Q1 - مکانیزم جلوگیری از refresh تکراری:** دو راه هست:`,
+  )
+  expect(fixBidi('➡️ (b)، به خاطر Q2. اگه Q2 «نه» باشه، (a) کافیه.')).toBe(
+    `${RLM}➡️ (b)، به خاطر Q2. اگه Q2 «نه» باشه، (a) کافیه.`,
+  )
+  const persianFirst = '➡️ آره. هر دو مسیر از همون `TokenRefresher` استفاده کنن.'
+  expect(fixBidi(persianFirst)).toBe(persianFirst)
+})
+
+test('dashes, curly quotes, arrows and emoji are not Persian letters', async () => {
+  for (const line of ['Run the tests — then check it’s “fine” → ✓', '❓ What next?', '日本語 text']) {
+    expect(isRtl(line)).toBe(false)
+    expect(fixBidi(line)).toBe(line)
+  }
+})

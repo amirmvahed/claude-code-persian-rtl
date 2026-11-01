@@ -9,11 +9,13 @@
 // Markdown syntax at the start of a line (lists, headings, quotes, wrapping
 // emphasis) stays before the mark; fenced code blocks are left alone.
 
-export const RLM = '‏'
-const LRM = '‎'
+export const RLM = '\u200F'
+const LRM = '\u200E'
 
-const RTL_LETTER = '֐-ࣿיִ-﷿ﹰ-﻿'
-const LTR_LETTER = 'A-Za-zÀ-ɏ'
+// Escapes, not the letters themselves: a literal U+FB1D decomposes into two
+// code points and turns the class into U+05B4..U+FDFF (emoji, dashes, quotes).
+const RTL_LETTER = '\\u0590-\\u08FF\\uFB1D-\\uFDFF\\uFE70-\\uFEFF'
+const LTR_LETTER = 'A-Za-z\\u00C0-\\u024F'
 const HAS_RTL = new RegExp(`[${RTL_LETTER}]`)
 // Marks count as letters: a line already marked is not marked again.
 const FIRST_STRONG = new RegExp(`[${RTL_LETTER}${LTR_LETTER}${RLM}${LRM}]`)
