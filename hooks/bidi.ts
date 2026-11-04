@@ -73,3 +73,14 @@ export function fixBidi(text: string): string {
     })
     .join('\n')
 }
+
+// Every string inside a tool's input, marked; keys and other values as they
+// were, so the input still fits the tool's schema.
+export function markAll(value: unknown): unknown {
+  if (typeof value === 'string') return fixBidi(value)
+  if (Array.isArray(value)) return value.map(markAll)
+  if (value !== null && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, markAll(v)]))
+  }
+  return value
+}

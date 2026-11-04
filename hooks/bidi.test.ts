@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { fixBidi, isRtl, RLM } from './bidi'
+import { fixBidi, isRtl, markAll, RLM } from './bidi'
 
 test('leaves a line alone when its first letter already gives its direction', async () => {
   const lines = [
@@ -122,4 +122,30 @@ test('dashes, curly quotes, arrows and emoji are not Persian letters', async () 
     expect(isRtl(line)).toBe(false)
     expect(fixBidi(line)).toBe(line)
   }
+})
+
+test('question boxes and the wrap-up card are marked like replies', async ($, on) => {
+  const recap = 'egress-proxy و fail2ban آپدیت شد. کد روی شاخهٔ ops/host-update-alert است.'
+  const questions = [
+    { question: 'شاخهٔ هشدار را در main ادغام کنم؟', header: 'Merge', options: [{ label: 'main را ادغام کن', description: 'Yes' }] },
+  ]
+
+  expect(markAll(questions)).toEqual([
+    { question: 'شاخهٔ هشدار را در main ادغام کنم؟', header: 'Merge', options: [{ label: `${RLM}main را ادغام کن`, description: 'Yes' }] },
+  ])
+
+  let input: unknown
+  on('ui.render', { component: 'ToolUse' }, ($, e) => {
+    input = e.props.input
+    return $.ui.resolve(e).Markdown({ text: 'w' })
+  })
+  const card = await $.ui.mount({
+    plugin: 'persian-rtl',
+    surface: 'desktop',
+    component: 'ToolUse',
+    props: { tool_use_id: 't1', tool: 'mcp__ccd_turn__wrap_up', input: { recap, count: 2 }, isRunning: false, isErrored: false, isInterrupted: false },
+  })
+  await card.drawn()
+  expect(input).toEqual({ recap: `${RLM}${recap}`, count: 2 })
+  await card.unmount()
 })
